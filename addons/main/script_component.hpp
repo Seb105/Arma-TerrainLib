@@ -12,3 +12,5 @@
 #endif
 
 #include "\z\TerrainLib\addons\main\script_macros.hpp"
+
+#define CHUNKSIZE 8

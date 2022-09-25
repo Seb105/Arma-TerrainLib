@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
-Function: TerrainLibfnc_getAreaTerrainGrid
+Function: TerrainLib_fnc_getAreaTerrainGrid
 
 Description:
     Returns all terrain points in the specified area
@@ -19,7 +19,7 @@ Returns:
 
 Examples:
     (begin example)
-        _allPoints = ["marker1"] call TerrainLibfnc_getAreaTerrainGrid;
+        _allPoints = ["marker1"] call TerrainLib_fnc_getAreaTerrainGrid;
     (end)
 
 Author:

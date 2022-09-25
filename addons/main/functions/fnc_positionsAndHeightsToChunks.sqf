@@ -57,7 +57,7 @@ getTerrainInfo params ["", "", "_cellSize", "_resolution", ""];
 // Cache calls to chunk builder
 private _chunksData = createHashMap;
 {
-    private _pos = [_x] call TerrainLibfnc_nearestTerrainPoint;
+    private _pos = [_x] call TerrainLib_fnc_nearestTerrainPoint;
     _pos set [2, _x#2];
     private _chunkInfo = [_pos, _chunksData] call _fnc_chunkGetOrDefault;
     _chunkInfo params ["_chunkOrigin", "_chunkPositionsAndHeights"];
