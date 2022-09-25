@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
-Function: CBA_fnc_setTerrainHeight
+Function: TerrainLibfnc_setTerrainHeight
 
 Description:
     Replicate functionality of setTerrainHeight command, but internally split the provided set of 
@@ -23,7 +23,7 @@ Examples:
             [1005, 1005, 25]
         ],
         true
-    ] call CBA_fnc_setTerrainHeight;
+    ] call TerrainLibfnc_setTerrainHeight;
     (end)
 
 Author:

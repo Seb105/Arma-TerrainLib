@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
-Function: CBA_fnc_flattenTerrainArea
+Function: TerrainLibfnc_flattenTerrainArea
 
 Description:
     Flatten the terrain by setting points within the specified area to a specified height.
@@ -29,7 +29,7 @@ Returns:
 
 Examples:
     (BEGIN EXAMPLE)
-        [[player, 500], (getPosASL player)#2, true, 0.5, 3, 2] call CBA_fnc_flattenTerrainArea
+        [[player, 500], (getPosASL player)#2, true, 0.5, 3, 2] call TerrainLibfnc_flattenTerrainArea
     (END EXAMPLE)
 
 Author:
@@ -44,7 +44,7 @@ params [
     ["_smoothPower", 2, [1]]
 ];
 _edgeSize = 0 max (1 min _edgeSize);
-private _positionsAndHeightsCurrent = [_areaArg] call CBA_fnc_getAreaTerrainGrid;
+private _positionsAndHeightsCurrent = [_areaArg] call TerrainLibfnc_getAreaTerrainGrid;
 private _positionsAndHeightsNew = if (_edgeSize != 0) then {
     private _area = (_areaArg call BIS_fnc_getArea);
     _area params ["_centre", "_a", "_b", "_angle", "_isRectangle", ""];
@@ -108,4 +108,4 @@ private _positionsAndHeightsNew = if (_edgeSize != 0) then {
         _x
     }
 };
-[_positionsAndHeightsNew, _adjustObjects] call CBA_fnc_setTerrainHeight
+[_positionsAndHeightsNew, _adjustObjects] call TerrainLibfnc_setTerrainHeight

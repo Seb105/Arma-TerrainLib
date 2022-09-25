@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
-Function: CBA_fnc_nearestTerrainPoint
+Function: TerrainLibfnc_nearestTerrainPoint
 
 Description:
     Given a a coordinate, return the closest terrain point and the Z value of that terrain point
@@ -13,7 +13,7 @@ Returns:
 
 Examples:
     (begin example)
-    player setPosASL ([getPos player] call CBA_fnc_nearestTerrainPoint);
+    player setPosASL ([getPos player] call TerrainLibfnc_nearestTerrainPoint);
     (end)
 
 Author:

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
-Function: CBA_terrain_fnc_shapePositionAlpha
+Function: TerrainLib_main_fnc_shapePositionAlpha
 
 Description:
     Find the alpha of this point within this shape.
@@ -32,7 +32,7 @@ Examples:
         private _shortestEdge = _a min _b;
         private _flatSize = (1-_edgeSize) * _shortestEdge;
         private _blendedSize = (_edgeSize) * _shortestEdge;
-        private _alpha = [_area, _pos, _mode, _delta, _flatSize, _blendedSize, _edgeSize] call CBA_terrain_fnc_shapePositionAlpha;
+        private _alpha = [_area, _pos, _mode, _delta, _flatSize, _blendedSize, _edgeSize] call TerrainLib_main_fnc_shapePositionAlpha;
     (END EXAMPLE)
 
 Author:

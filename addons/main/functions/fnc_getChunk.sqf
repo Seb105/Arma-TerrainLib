@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
-Function: CBA_terrain_fnc_getChunk
+Function: TerrainLib_main_fnc_getChunk
 
 Description:
     Given a a coordinate, return all terrain points in the chunk containing the coordinate. 
@@ -13,7 +13,7 @@ Returns:
 
 Examples:
     (begin example)
-    private _chunkData = [getPos player] call CBA_terrain_fnc_getChunk;
+    private _chunkData = [getPos player] call TerrainLib_main_fnc_getChunk;
     (end)
 
 Author:

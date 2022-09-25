@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
-Function: CBA_fnc_unmodifiedTerrainHeight
+Function: TerrainLibfnc_unmodifiedTerrainHeight
 
 Description:
     Given a a coordinate, return the original Z value of the nearest terrain point.
@@ -15,7 +15,7 @@ Returns:
 
 Examples:
     (begin example)
-        player setPosASL ([getPos player] call CBA_fnc_unmodifiedTerrainHeight);
+        player setPosASL ([getPos player] call TerrainLibfnc_unmodifiedTerrainHeight);
     (end)
 
 Author:
@@ -23,7 +23,7 @@ Author:
 ---------------------------------------------------------------------------- */
 params ["_pos"];
 getTerrainInfo params ["", "", "_cellSize", "_resolution", ""];
-_pos = [_pos] call CBA_fnc_nearestTerrainPoint;
+_pos = [_pos] call TerrainLibfnc_nearestTerrainPoint;
 private _chunkOrigin = [_pos] call FUNC(chunkOrigin);
 private _key = str _chunkOrigin;
 private _chunk = GVAR(originalTerrainChunks) get _key;

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
-Function: CBA_terrain_fnc_positionsAndHeightsToChunks
+Function: TerrainLib_main_fnc_positionsAndHeightsToChunks
 
 Description:
     Given a set of coordinates, [[x1,y1,z1], [x2,y2,z2]...], this function will return a complete
@@ -25,7 +25,7 @@ Examples:
             [1000, 1005, 25], 
             [1005, 1005, 25]
         ]
-    ] call CBA_terrain_fnc_positionsAndHeightsToChunks;
+    ] call TerrainLib_main_fnc_positionsAndHeightsToChunks;
     {
         private _origin = parseSimpleArray _x;
         private _chunkPositionsAndHeights = _y;
@@ -57,7 +57,7 @@ getTerrainInfo params ["", "", "_cellSize", "_resolution", ""];
 // Cache calls to chunk builder
 private _chunksData = createHashMap;
 {
-    private _pos = [_x] call CBA_fnc_nearestTerrainPoint;
+    private _pos = [_x] call TerrainLibfnc_nearestTerrainPoint;
     _pos set [2, _x#2];
     private _chunkInfo = [_pos, _chunksData] call _fnc_chunkGetOrDefault;
     _chunkInfo params ["_chunkOrigin", "_chunkPositionsAndHeights"];
