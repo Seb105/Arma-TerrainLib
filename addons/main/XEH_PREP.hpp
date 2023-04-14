@@ -1,5 +1,5 @@
 PREP(getChunk);
-PREP(interpolate);
+PREP(getInterpolateFnc);
 PREP(chunkOrigin);
 PREP(positionsAndHeightsToChunks);
 PREP(shapePositionAlpha);

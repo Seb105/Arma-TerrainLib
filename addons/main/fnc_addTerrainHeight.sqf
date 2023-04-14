@@ -46,6 +46,7 @@ params [
 ];
 _edgeSize = 0 max (1 min _edgeSize);
 private _positionsAndHeightsCurrent = [_areaArg] call TerrainLib_fnc_getAreaTerrainGrid;
+private _interpolateFnc = [_smoothMode] call FUNC(getInterpolateFnc);
 private _positionsAndHeightsNew = if (_edgeSize != 0) then {
     private _area = (_areaArg call BIS_fnc_getArea);
     _area params ["_centre", "_a", "_b", "_angle", "_isRectangle", ""];
@@ -57,7 +58,7 @@ private _positionsAndHeightsNew = if (_edgeSize != 0) then {
     _positionsAndHeightsCurrent apply {
         private _pos = _x;
         private _alpha = [_area, _pos, _mode, _delta, _flatSize, _blendedSize, _edgeSize] call FUNC(shapePositionAlpha);
-        _alpha = [_alpha, _smoothPower, _smoothMode] call FUNC(interpolate);
+        _alpha = [_alpha, _smoothPower] call _interpolateFnc;
         private _add = _height * _alpha;
         _pos vectorAdd [0, 0, _add]
     }
