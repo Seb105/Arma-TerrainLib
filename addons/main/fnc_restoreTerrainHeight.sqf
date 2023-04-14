@@ -47,47 +47,6 @@ private _positionsAndHeightsCurrent = [_areaArg] call TerrainLib_fnc_getAreaTerr
 private _positionsAndHeightsNew = if (_edgeSize != 0) then {
     private _area = (_areaArg call BIS_fnc_getArea);
     _area params ["_centre", "_a", "_b", "_angle", "_isRectangle", ""];
-    private _fnc_interpolate = switch (_smoothMode) do {
-        // https://www.desmos.com/calculator/3lr40hyzkk
-        case 0: {
-            {
-                // Linear interpolation
-                params ["_alpha", "_power"];
-                _alpha
-            }
-        };
-        case 1: {
-            {			
-                // Ease in
-                params ["_alpha", "_power"];
-                _alpha^_power
-            }
-        };
-        case 2: {
-            {
-                // Ease out
-                params ["_alpha", "_power"];
-                _alpha^(1/_power)
-            }
-        };
-        case 3: {
-            {
-                // EaseinOut
-                params ["_alpha", "_power"];
-                private _raised = _alpha^_power;
-                _raised/(_raised+(1-_alpha)^_power)
-            }
-        };
-        default {
-            {
-                // Default to linear
-                params ["_alpha", "_power"];
-                _alpha
-            }
-        };
-    };
-
-
     private _mode = _a>_b;
     private _delta = (abs (_a-_b));
     private _shortestEdge = _a min _b;
@@ -97,7 +56,7 @@ private _positionsAndHeightsNew = if (_edgeSize != 0) then {
         private _pos = _x;
         private _currHeight = _pos#2;
         private _alpha = [_area, _pos, _mode, _delta, _flatSize, _blendedSize, _edgeSize] call FUNC(shapePositionAlpha);
-        _alpha = [_alpha, _smoothPower] call _fnc_interpolate;
+        _alpha = [_alpha, _smoothPower, _smoothMode] call FUNC(interpolate);
         private _origZ = ([_pos] call TerrainLib_fnc_unmodifiedTerrainHeight)#2;
         private _heightChange = (_origZ - _currHeight) * _alpha;
         _pos vectorAdd [0, 0, _heightChange]
