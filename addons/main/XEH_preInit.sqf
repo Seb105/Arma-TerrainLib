@@ -13,3 +13,5 @@ GVAR(originalTerrainChunks) = createHashMap;
 //         } forEach GVAR(modifiedTerrainChunks);
 //     }];
 // };
+
+ADDON = true;
