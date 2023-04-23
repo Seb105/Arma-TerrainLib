@@ -11,7 +11,3 @@ overviewText = "TerrainLib";
 logoSmall	 = "logoSmall.paa";	    // Display next to the item added by the mod
 logo		 = "logoSmall.paa";			// Logo displayed in the main menu
 logoOver	 = "logoSmall.paa";	
-files = [
-    "mod.cpp",
-    "logoSmall.paa",
-] 

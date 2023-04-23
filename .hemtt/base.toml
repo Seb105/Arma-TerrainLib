@@ -5,3 +5,8 @@ template = "cba"
 mainprefix = "z"
 folder_optionals = true
 sig_version = 3
+include = ["./include"]
+files = [
+    "mod.cpp",
+    "logoSmall.paa",
+] 
