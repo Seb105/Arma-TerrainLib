@@ -39,6 +39,7 @@ private _chunksData = [_positionsAndHeights] call FUNC(positionsAndHeightsToChun
     private _key = _x;
     private _chunkPositionsAndHeights = _y;
     setTerrainHeight [_chunkPositionsAndHeights, _adjustObjects];
-    GVAR(modifiedTerrainChunks) set [_key, +[_chunkPositionsAndHeights, _adjustObjects]];
+    // Wiki is wrong, don't need to serialise terrain ourselves, but is useful cache for speed probably
+    GVAR(modifiedTerrainChunks) set [_key, [_chunkPositionsAndHeights, _adjustObjects]];
 } forEach _chunksData;
 true

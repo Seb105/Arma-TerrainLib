@@ -5,12 +5,11 @@ ADDON = false;
 GVAR(modifiedTerrainChunks) = createHashMap;
 GVAR(originalTerrainChunks) = createHashMap;
 
-if !(isMultiplayer) then {
-    addMissionEventHandler ["Loaded", {
-        {
-            setTerrainHeight _y;
-        } forEach GVAR(modifiedTerrainChunks);
-    }];
-};
-
-ADDON = true;
+// Wiki is wrong, this isn't necessary. Terrain is saved.
+// if !(isMultiplayer) then {
+//     addMissionEventHandler ["Loaded", {
+//         {
+//             setTerrainHeight _y;
+//         } forEach GVAR(modifiedTerrainChunks);
+//     }];
+// };

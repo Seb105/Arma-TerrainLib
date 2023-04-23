@@ -23,6 +23,13 @@ params [
     ["_pos", [0,0,0], [[]], [2,3]]
 ];
 _pos = [_pos] call FUNC(chunkOrigin);
+private _key = str _pos;
+
+// If this chunk has been modified, return the modified terrain cache
+private _chunkPositionsAndHeights = GVAR(modifiedTerrainChunks) get _key;
+if (!isNil "_chunkPositionsAndHeights") exitWith {_chunkPositionsAndHeights#0};
+
+// Otherwise, get the terrain data from the engine
 getTerrainInfo params ["", "", "_cellSize", "_resolution", ""];
 private _chunkPositionsAndHeights = [];
 for "_cellX" from 0 to CHUNKSIZE - 1 do {
@@ -32,8 +39,8 @@ for "_cellX" from 0 to CHUNKSIZE - 1 do {
         _chunkPositionsAndHeights pushBack _coordPos;
     };
 };
-// If this is the first time getting this chunk, save original terrain.
-private _key = str _pos;
+
+// this is the first time getting this chunk, save original terrain.
 if (isServer && {!(_key in GVAR(originalTerrainChunks))}) then {
     GVAR(originalTerrainChunks) set [_key, +_chunkPositionsAndHeights];
 };

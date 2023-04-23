@@ -1,0 +1,167 @@
+[h1]Terrain Library[/h1]
+
+This provides some useful funcitons, and fixes a problem of network optimisation in multiplayer when it comes to changing terrain heights.
+
+
+By default, when you modify group of terrain points, unless the exact same group has been updated before then all points will be sent over the network.
+This means that you might be sending the same group of terrain points over the network tens of times to JIPs - terrible for server performance.
+This mod uses an automatic chunking system to fix that, but only when using TerrainLib functions.
+
+[H1]FEATURES:[/H1]
+- Easy, area-based terrain modification with lots of customisation parameters
+- Automatic network optimisation for multiplayer (only when using TerrainLib commands)
+- Fix vehicle velocity being set to 0 when changing object heights (area-based commands only)
+- Increase compatibility between mods that depend on this mod
+
+[h1]Compatability[/h1]
+Generally speaking, will be compatible with other mods with minor issues
+[b]Deformer:[/b]
+Don't use TerrainLib code until after the mission is in progress. 
+This ensures Deformer has already done its thing and the two won't overlap.
+TerrainLib's restore terrain height commands will only restore to the original deformer modifications
+[b]Various crater mods[/b]
+TerrainLib's restore terrain height commands will not be able to restore craters unless they were created using TerrainLib.
+
+[h1]How to use[/h1]
+All commands which modify terrain are server only.
+Convert your existing code to make use of network optimisation is a single line change
+[code]
+// Your existing code:
+setTerrainHeight [_positionAndAltitudeArray, _adjustObjects]
+// Your new code:
+[_positionAndAltitudeArray, _adjustObjects] call TerrainLib_fnc_setTerrainHeight
+[/code]
+
+[b]Area-based commands:[/b]
+
+Add/subtract terrain height:
+[code]
+/*
+Parameters:
+    _area - argument compatible with https://community.bistudio.com/wiki/BIS_fnc_getArea 
+        [TRIGGER, MARKER, LOCATION, ARRAY]
+    _height - height in metres to add. Negative number lowers terrain [NUMBER]
+    _adjustObjects - Adjust objects to new height [BOOL]
+    _edgeSize - Number 0..1 controlling the size of the blended area between _height and the existing terrain.
+        0 = No blending (Instant step between existing terrain and _height)
+        0.5 = Half the distance to the centre will be _height, half will be transitional region
+        1 = All blended (centre of _area will be _height, smooth transition between)
+        [NUMBER]
+    _smoothMode - Interpolation function for _edgeSize
+        0 - Linear
+        1 - Smooth in
+        2 - Smooth out
+        3 - Smooth in & out
+        [NUMBER]
+    _smoothPower - How strong the smoothing mode is applied. Numbers less than 1 will result in odd behaviour. Default 2. Leave it as 2.
+        [NUMBER]
+
+Example:
+*/
+[[player, 25], -15, true, 1, 2, 2] call TerrainLib_fnc_addTerrainHeight]
+[/code]
+
+Flatten terrain area:
+[code]
+/*
+Parameters:
+    _area - argument compatible with https://community.bistudio.com/wiki/BIS_fnc_getArea 
+        [TRIGGER, MARKER, LOCATION, ARRAY]
+    _height - heightASL to set the height. Negative number lowers terrain [NUMBER]
+    _adjustObjects - Adjust objects to new height [BOOL]
+    _edgeSize - Number 0..1 controlling the size of the blended area between _height and the existing terrain.
+        0 = No blending (Instant step between existing terrain and _height)
+        0.5 = Half the distance to the centre will be _height, half will be transitional region
+        1 = All blended (centre of _area will be _height, smooth transition between)
+    _smoothMode - Interpolation function for _edgeSize
+        0 - Linear
+        1 - Smooth in
+        2 - Smooth out
+        3 - Smooth in & out
+    [NUMBER]
+    _smoothPower - How strong the smoothing mode is applied. Numbers less than 1 will result in odd behaviour. Default 2. Leave it as 2.
+    [NUMBER]
+
+Example:
+*/
+[[player, 500], (getPosASL player)#2, true, 0.5, 3, 2] call TerrainLib_fnc_flattenTerrainArea
+[/code]
+
+Restore terrain height (only works for terrain that has been modified by TerrainLib):
+[code]
+/*
+Parameters:
+    _area - argument compatible with https://community.bistudio.com/wiki/BIS_fnc_getArea 
+        [TRIGGER, MARKER, LOCATION, ARRAY]
+    _adjustObjects - Adjust objects to new height [BOOL]
+    _edgeSize - Number 0..1 controlling the size of the blended area between _height and the existing terrain.
+        0 = No blending (Instant step between existing terrain and _height)
+        0.5 = Half the distance to the centre will be _height, half will be transitional region
+        1 = All blended (centre of _area will be _height, smooth transition between)
+        [NUMBER]
+    _smoothMode - Interpolation function for _edgeSize
+        0 - Linear
+        1 - Smooth in
+        2 - Smooth out
+        3 - Smooth in & out
+        [NUMBER]
+    _smoothPower - How strong the smoothing mode is applied. Numbers less than 1 will result in odd behaviour. Default 2. Leave it as 2.
+        [NUMBER]
+
+Example:
+*/
+[[player, 500], (getPosASL player)#2, true, 0.5, 3, 2] call TerrainLib_fnc_restoreTerrainHeight
+[/code]
+
+Run this on the VR map for a nice demo of all the customisation features:
+[code]
+0 spawn {
+    waitUntil {
+        time>1
+    };
+    private _step = 200;
+    private _start = [_step, _step, 0];
+    private _current = +_start;
+    {
+        private _smoothMode = _x;
+        {
+            private _edgeSize = _x;
+            {
+                private _isRectangle = _x;
+                {
+                    private _heightChange = _x;
+                    {
+                        private _a = _x;
+                        private _b = 70;
+                        {
+                            private _angle = _x;
+                            private _area = [_current, [_a, _b, _angle, _isRectangle]];
+                            private _args = [_area, _heightChange, false, _edgeSize, _smoothMode, 2];
+                            private _name = str _args;
+                            _args call TerrainLib_fnc_addTerrainHeight;
+                            private _marker = createMarkerLocal [_name, _current];
+                            _marker setMarkerText _name;
+                            _marker setMarkerType "hd_dot";
+                            _current = _current vectorAdd [0, _step, 0];
+                        } forEach [0, 45];
+                    } forEach [15, 70];
+                } forEach [20, -5];
+            } forEach [true, false];
+            _start = _start vectorAdd [_step, 0, 0];
+            _current = +_start;
+        } forEach [0, 0.25, 0.5, 0.75, 1];
+    } forEach [0, 1, 2, 3];
+};
+[/code]
+
+[b]Code & Licensing[/b]
+Please submit bug reports or feature requests to this projects [url=https://github.com/Seb105/Arma-TerrainLib]GitHub[/url]
+Licensed Under GPLv2
+[b]Please do not bundle TerrainLib or its funtions with your addon, make this mod a dependency. 
+The mod functionality relies on having a single mod (this one) handling all terrain modificaiton[/b]
+
+[h1] Looking for an Arma community? Check CNTO out: [/h1]
+
+https://www.carpenoctem.co/
+
+https://www.youtube.com/watch?v=QE8tMdhDYjI

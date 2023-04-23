@@ -20,7 +20,7 @@ Parameters:
         2 - Smooth out
         3 - Smooth in & out
     [NUMBER]
-    _smoothPower - How strong the smoothing mode is applied. Numbers less than 1 will result in odd behaviour.
+    _smoothPower - How strong the smoothing mode is applied. Numbers less than 1 will result in odd behaviour. Default 2. Leave it as 2.
     [NUMBER]
 
 
@@ -43,11 +43,17 @@ params [
     ["_smoothMode", 3, [1]],
     ["_smoothPower", 2, [1]]
 ];
+if !(isServer) exitWith {false};
 _edgeSize = 0 max (1 min _edgeSize);
 private _positionsAndHeightsCurrent = [_areaArg] call TerrainLib_fnc_getAreaTerrainGrid;
 private _interpolateFnc = [_smoothMode] call FUNC(getInterpolateFnc);
+
+private _area = (_areaArg call BIS_fnc_getArea);
+private _vehicleVelocities = if (_adjustObjects) then {
+    [_area] call FUNC(vehicleVelocitiesGet)
+};
+
 private _positionsAndHeightsNew = if (_edgeSize != 0) then {
-    private _area = (_areaArg call BIS_fnc_getArea);
     _area params ["_centre", "_a", "_b", "_angle", "_isRectangle", ""];
     private _mode = _a>_b;
     private _delta = (abs (_a-_b));
@@ -68,4 +74,8 @@ private _positionsAndHeightsNew = if (_edgeSize != 0) then {
         _x
     }
 };
-[_positionsAndHeightsNew, _adjustObjects] call TerrainLib_fnc_setTerrainHeight
+[_positionsAndHeightsNew, _adjustObjects] call TerrainLib_fnc_setTerrainHeight;
+if (_adjustObjects) then {
+    [_vehicleVelocities] call FUNC(vehicleVelocitiesSet);
+};
+true
