@@ -11,18 +11,23 @@
             when called for many points in a shape
         
         Parameters:
-            _area - Area information [ARRAY]
-            _pos - point inside _area to find alpha for [ARRAY]
+            Of this function:
             _mode - Whether _a>_b of the shape. [BOOL]
-            _delta - abs (_a-_b) of the shape. [NUMBER]
-            _flatSize - (1-_edgeSize) * (_a min _b); [NUMBER]
-            _blendedSize = (_edgeSize) * (_a min _b); [NUMBER]
-            _edgeSize - Number 0..1. Proportion of edge of shape to over which to apply gradient. 0 = no gradient, 1 = gradient over whole of shape [NUMBER]
+            _isRectangle - Whether the shape is a rectangle. [BOOL]
+
+            Of the returned function:
+            _area - The area to find the alpha of. [ARRAY]
+            _pos - The position to find the alpha of. [ARRAY]
+            _delta - The difference between the longest and shortest side of the shape. [NUMBER]
+            _flatSize - The size of flat area of the shape along the shortest edge [NUMBER]
+            _blendedSize - The size of the blended area of the shape along the shortest edge [NUMBER]
+            _edgeSize - The proportion of the blended area of the shape [NUMBER]
+
             
         
         
         Returns:
-            Function which returns alpha for a given point [CODE]
+            Function which returns an alpha for a given point (0..1)[CODE]
         
         Examples:
             (BEGIN EXAMPLE)
@@ -32,7 +37,7 @@
                 private _shortestEdge = _a min _b;
                 private _flatSize = (1-_edgeSize) * _shortestEdge;
                 private _blendedSize = (_edgeSize) * _shortestEdge;
-                private _alpha = [_area, _pos, _mode, _delta, _flatSize, _blendedSize, _edgeSize] call TerrainLib_main_fnc_shapePositionAlpha;
+                private _alpha = [_area, _pos, _delta, _flatSize, _blendedSize, _edgeSize] call TerrainLib_main_fnc_getShapePositionAlphaFnc;
             (END EXAMPLE)
         
         Author:
