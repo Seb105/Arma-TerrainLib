@@ -59,10 +59,11 @@ private _positionsAndHeightsNew = if (_edgeSize != 0) then {
     private _shortestEdge = _a min _b;
     private _flatSize = (1-_edgeSize) * _shortestEdge;
     private _blendedSize = (_edgeSize) * _shortestEdge;
+    private _posAlphaFnc = [_mode, _isRectangle] call FUNC(getShapePositionAlphaFnc);
     _positionsAndHeightsCurrent apply {
         private _pos = _x;
         private _currHeight = _pos#2;
-        private _alpha = [_area, _pos, _mode, _delta, _flatSize, _blendedSize, _edgeSize] call FUNC(shapePositionAlpha);
+        private _alpha = [_area, _pos, _delta, _flatSize, _blendedSize, _edgeSize] call _posAlphaFnc;
         _alpha = [_alpha, _smoothPower] call _interpolateFnc;
         private _origZ = ([_pos] call TerrainLib_fnc_unmodifiedTerrainHeight)#2;
         private _heightChange = (_origZ - _currHeight) * _alpha;
