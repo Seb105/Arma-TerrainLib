@@ -4,7 +4,7 @@ Function: TerrainLib_fnc_unmodifiedTerrainHeight
 
 Description:
     Given a a coordinate, return the original Z value of the nearest terrain point.
-    Note that if the terrain was modified through a non-CBA function before this is called, it will 
+    Note that if the terrain was modified through a non-TerrainLib function before this is called, it will 
     be returned as the original terrain height.
 
 Parameters:
