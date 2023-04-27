@@ -72,7 +72,7 @@ private _positionsAndHeightsNew = if (_edgeSize != 0) then {
 } else {
     _positionsAndHeightsCurrent apply {_x vectorAdd [0, 0, _height]}
 };
-[_positionsAndHeightsNew, _adjustObjects] call TerrainLib_fnc_setTerrainHeight;
+[_positionsAndHeightsNew, _adjustObjects, true] call TerrainLib_fnc_setTerrainHeight;
 if (_adjustObjects) then {
     [_vehicleVelocities] call FUNC(vehicleVelocitiesSet);
 };

@@ -9,6 +9,9 @@ Description:
 Parameters:
     _positionsAndHeights - array of [[x1,y1,z1], [x2,y2,z2]...]  [ARRAY]
     _adjustObjects - if true then objects on modified points are moved up/down to keep the same ATL height  [BOOL]
+    _lazy - If true then don't confirm that points provided align perfectly to terrain grid to save performance.
+    You are effectively promising you've already done that step yourself, such as by using TerrainLib_fnc_getAreaTerrainGrid which does this for you.
+    IF YOU USE THIS WRONG YOU WILL BREAK THE MOD AND I WILL FIND AND KILL YOU! DON'T USE IT IF YOU DONT UNDERSTAND! [BOOL]
 
 Returns:
     Whether the terrain was successfully edited [BOOL];
@@ -31,10 +34,15 @@ Author:
 ---------------------------------------------------------------------------- */
 params [
     ["_positionsAndHeights", [], [[]]],
-    ["_adjustObjects", true, [true]]
+    ["_adjustObjects", true, [true]],
+    ["_lazy", false, [false]] // DO NOT USE UNLESS YOU REALLY KNOW WHAT YOURE DOING
 ];
 if !(isServer) exitWith {false};
-private _chunksData = [_positionsAndHeights] call FUNC(positionsAndHeightsToChunks);
+private _chunksData = if (_lazy) then {
+    [_positionsAndHeights] call FUNC(positionsAndHeightsToChunksLazy);
+} else {
+    [_positionsAndHeights] call FUNC(positionsAndHeightsToChunks);
+};
 {
     private _key = _x;
     private _chunkPositionsAndHeights = _y;

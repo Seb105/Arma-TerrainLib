@@ -74,7 +74,7 @@ private _positionsAndHeightsNew = if (_edgeSize != 0) then {
         [_x] call TerrainLib_fnc_unmodifiedTerrainHeight
     }
 };
-[_positionsAndHeightsNew, _adjustObjects] call TerrainLib_fnc_setTerrainHeight;
+[_positionsAndHeightsNew, _adjustObjects, true] call TerrainLib_fnc_setTerrainHeight;
 if (_adjustObjects) then {
     [_vehicleVelocities] call FUNC(vehicleVelocitiesSet);
 };
