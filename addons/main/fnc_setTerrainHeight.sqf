@@ -6,6 +6,14 @@ Description:
     Replicate functionality of setTerrainHeight command, but internally split the provided set of 
     positions up into 'chunks' and save the resulting changes for save serialisation/deserialisation
 
+    Calls the "Terrainlib_terrainHeightChanged" local event on the server with the following params:
+    _positionsAndHeights - array of [[x1,y1,z1], [x2,y2,z2]...]  [ARRAY]
+    _adjustObjects - move objects with terrain [BOOL]
+
+    The EH is called before the terrain is actually updated, and as arrays are passed by reference if you mutate the input array you mutate the result.
+    You can't just overwrite the array variable with a new one, you have to mutate existing reference with the set command
+    If you want to use the EH to modify the ouptut, use this method as calling setTerrainHeight again may cause an infinite loop.
+
 Parameters:
     _positionsAndHeights - array of [[x1,y1,z1], [x2,y2,z2]...]  [ARRAY]
     _adjustObjects - if true then objects on modified points are moved up/down to keep the same ATL height  [BOOL]
@@ -38,6 +46,10 @@ params [
     ["_lazy", false, [false]] // DO NOT USE UNLESS YOU REALLY KNOW WHAT YOURE DOING
 ];
 if !(isServer) exitWith {false};
+
+// Local event will only be called on server due to above. As this is called before setTerrainHeight, if you mutate the input array you mutate the output here.
+["TerrainLib_terrainHeightChanged", [_positionsAndHeights, _adjustObjects]] call CBA_fnc_localEvent;
+
 private _chunksData = if (_lazy) then {
     [_positionsAndHeights] call FUNC(positionsAndHeightsToChunksLazy);
 } else {
