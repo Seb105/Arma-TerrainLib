@@ -29,7 +29,7 @@ Returns:
 
 Examples:
     (BEGIN EXAMPLE)
-        [[player, 500], (getPosASL player)#2, true, 0.5, 3, 2] call TerrainLib_fnc_restoreTerrainHeight
+        [[player, 500], true, 0.5, 3, 2] call TerrainLib_fnc_restoreTerrainHeight
     (END EXAMPLE)
 
 Author:
