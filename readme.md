@@ -118,7 +118,8 @@ private _eventID = [
     }, ["hi"]
 ] call CBA_fnc_addEventHandlerArgs;
 ```
-This event handler is called before the terrain height is actually set. Therefore, by modifying `_positionsAndHeights` by reference using `set` you can alter the output and change how the terrain is modified in the event handler.
+This event handler is called before the terrain height is actually set. 
+Therefore, by modifying `_positionsAndHeights` by reference using `set` you can alter the output and change how the terrain is modified in-game.
 
 ## Run this on the VR map in init.sqf for a nice demo of all the customisation features:
 ```sqf
