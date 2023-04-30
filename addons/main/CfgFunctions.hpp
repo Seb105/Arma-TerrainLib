@@ -1,6 +1,7 @@
 class CfgFunctions {
     class TerrainLib {
         class Terrain {
+            PATHTO_FNC(alignToTerrainPoints);
             PATHTO_FNC(addTerrainHeight);
             PATHTO_FNC(nearestTerrainPoint);
             PATHTO_FNC(setTerrainHeight);
