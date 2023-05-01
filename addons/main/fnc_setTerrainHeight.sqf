@@ -11,6 +11,7 @@ Description:
     _adjustObjects - move objects with terrain [BOOL]
 
     The EH is called before the terrain is actually updated, and as arrays are passed by reference if you mutate the input array you mutate the result.
+    The terrain points passed to this function should already be aligned to the terrain grid, so you don't need to check that here.
     You can't just overwrite the array variable with a new one, you have to mutate existing reference with the set command
     If you want to use the EH to modify the ouptut, use this method as calling setTerrainHeight again may cause an infinite loop.
 
@@ -57,6 +58,7 @@ private _positionsAndHeights = if (_lazy) then {
 // Local event will only be called on server due to above. As this is called before setTerrainHeight, if you mutate the input array you mutate the output here.
 ["TerrainLib_terrainHeightChanged", [_positionsAndHeights, _adjustObjects]] call CBA_fnc_localEvent;
 
+// Deprecate non-lazy version as alignment happens above
 private _chunksData = [_positionsAndHeights] call FUNC(positionsAndHeightsToChunksLazy);
 
 {
