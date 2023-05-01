@@ -41,20 +41,24 @@ Author:
     Seb
 ---------------------------------------------------------------------------- */
 params [
-    ["_positionsAndHeights", [], [[]]],
+    ["_positionsAndHeightsIn", [], [[]]],
     ["_adjustObjects", true, [true]],
     ["_lazy", false, [false]] // DO NOT USE UNLESS YOU REALLY KNOW WHAT YOURE DOING
 ];
 if !(isServer) exitWith {false};
 
+// Don't modify input array to this function needs a copy if nothing is done
+private _positionsAndHeights = if (_lazy) then {
+    +_positionsAndHeightsIn
+} else {
+    [_positionsAndHeightsIn] call TerrainLib_fnc_alignPointsToGrid
+};
+
 // Local event will only be called on server due to above. As this is called before setTerrainHeight, if you mutate the input array you mutate the output here.
 ["TerrainLib_terrainHeightChanged", [_positionsAndHeights, _adjustObjects]] call CBA_fnc_localEvent;
 
-private _chunksData = if (_lazy) then {
-    [_positionsAndHeights] call FUNC(positionsAndHeightsToChunksLazy);
-} else {
-    [_positionsAndHeights] call FUNC(positionsAndHeightsToChunks);
-};
+private _chunksData = [_positionsAndHeights] call FUNC(positionsAndHeightsToChunksLazy);
+
 {
     private _key = _x;
     private _chunkPositionsAndHeights = _y;
