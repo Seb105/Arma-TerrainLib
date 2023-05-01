@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
-Function: TerrainLib_fnc_alignToTerrainPoints
+Function: TerrainLib_fnc_alignPointsToGrid
 
 Description:
     Given an Array of Positions and Heights, return the positions and heights that would result from the automatic aligning process in TerrainLib_fnc_setTerrainHeight
@@ -18,7 +18,7 @@ Examples:
         [1005, 1000, 25], 
         [1000, 1005, 25], 
         [1005, 1005, 25]
-    ]] call TerrainLib_fnc_alignToTerrainPoints;
+    ]] call TerrainLib_fnc_alignPointsToGrid;
     (end)
 
 Author:
@@ -30,11 +30,14 @@ params [
 
 
 private _positionsHM = createHashMap;
-
+getTerrainInfo params ["", "", "_cellSize", "_resolution", ""];
 {
-    private _pos = [_x] call TerrainLib_fnc_nearestTerrainPoint;
+    private _xy = _x select [0,2];
+    private _pos = _xy apply {
+        (round (_x/_cellsize))*_cellSize
+    };
     _pos set [2, _x#2];
-    _positionsHM set [[_pos#0, _pos#1], _pos];
+    _positionsHM set [_xy, _pos];
 } forEach _positionsAndHeights;
 
-values _positionsHM;
+values _positionsHM
