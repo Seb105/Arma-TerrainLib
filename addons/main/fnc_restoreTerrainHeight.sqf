@@ -25,7 +25,7 @@ Parameters:
 
 
 Returns:
-    Whether the terrain was succesfully changed
+    False if not the server, or _positionsAndHeights that were actually set in-game after any event handlers [BOOL, ARRAY];
 
 Examples:
     (BEGIN EXAMPLE)
@@ -74,8 +74,9 @@ private _positionsAndHeightsNew = if (_edgeSize != 0) then {
         [_x] call TerrainLib_fnc_unmodifiedTerrainHeight
     }
 };
-[_positionsAndHeightsNew, _adjustObjects, true] call TerrainLib_fnc_setTerrainHeight;
+private _positionsAndHeightsSet = [_positionsAndHeightsNew, _adjustObjects, true] call TerrainLib_fnc_setTerrainHeight;
 if (_adjustObjects) then {
     [_vehicleVelocities] call FUNC(vehicleVelocitiesSet);
 };
-true
+
+_positionsAndHeightsSet

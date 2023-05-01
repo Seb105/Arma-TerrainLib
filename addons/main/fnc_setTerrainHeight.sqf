@@ -23,7 +23,7 @@ Parameters:
     IF YOU USE THIS WRONG YOU WILL BREAK THE MOD AND I WILL FIND AND KILL YOU! DON'T USE IT IF YOU DONT UNDERSTAND! [BOOL]
 
 Returns:
-    Whether the terrain was successfully edited [BOOL];
+    False if not the server, or _positionsAndHeights that were actually set in-game after any event handlers [BOOL, ARRAY];
 
 Examples:
     (begin example)
@@ -68,4 +68,5 @@ private _chunksData = [_positionsAndHeights] call FUNC(positionsAndHeightsToChun
     // Wiki is wrong, don't need to serialise terrain ourselves, but is useful cache for speed probably
     GVAR(modifiedTerrainChunks) set [_key, [_chunkPositionsAndHeights, _adjustObjects]];
 } forEach _chunksData;
-true
+
+_positionsAndHeights
