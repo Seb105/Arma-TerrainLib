@@ -48,6 +48,9 @@ Parameters:
     _smoothPower - How strong the smoothing mode is applied. Numbers less than 1 will result in odd behaviour. Default 2. Leave it as 2.
         [NUMBER]
 
+Returns:
+    False if not the server, or _positionsAndHeights that were actually set in-game after any event handlers [BOOL, ARRAY]
+
 Example:
 */
 [[player, 25], -15, true, 1, 2, 2] call TerrainLib_fnc_addTerrainHeight
@@ -73,6 +76,10 @@ Parameters:
     [NUMBER]
     _smoothPower - How strong the smoothing mode is applied. Numbers less than 1 will result in odd behaviour. Default 2. Leave it as 2.
     [NUMBER]
+
+
+Returns:
+    False if not the server, or _positionsAndHeights that were actually set in-game after any event handlers [BOOL, ARRAY]
 
 Example:
 */
@@ -100,11 +107,14 @@ Parameters:
     _smoothPower - How strong the smoothing mode is applied. Numbers less than 1 will result in odd behaviour. Default 2. Leave it as 2.
         [NUMBER]
 
+
+Returns:
+    False if not the server, or _positionsAndHeights that were actually set in-game after any event handlers [BOOL, ARRAY]
+
 Example:
 */
 [[player, 500], true, 0.5, 3, 2] call TerrainLib_fnc_restoreTerrainHeight
 ```
-
 # CBA Events
 Whenever terrain height is changed through TerrainLib, including the area functions, the following event is called: `"TerrainLib_terrainHeightChanged"`
 
@@ -120,6 +130,35 @@ private _eventID = [
 ```
 This event handler is called before the terrain height is actually set. 
 Therefore, by modifying `_positionsAndHeights` by reference using `set` you can alter the output and change how the terrain is modified in-game.
+
+`_positionsAndHeights` sent to this event handler will already be aligned to the terrain grid, so you don't need to double check that. For this reason it's recommended you do not move the XY positons of any points, as moving the positions off the terrain grid will cause issues.
+
+It is not recommended to call `TerrainLib_fnc_setTerrainHeight` from inside this EH, as it is liable cause an infinite loop of event handlers triggering event handlers.
+# Align points to terrain grid.
+By default, `TerrainLib_fnc_setTerrainHeight` will align the points to a grid for you.
+
+`TerrainLib_fnc_alignPointsToGrid` will align a list of points to the TerrainGrid, which you can call if you want
+
+```sqf
+/*
+Parameters:
+    _positionsAndHeights - array of [[x1,y1,z1], [x2,y2,z2]...]  [ARRAY]
+
+Returns:
+    Positions and Heights usable with lazy setTerrainHeight [ARRAY] 
+
+Example:
+*/
+[[
+    [1002.7, 1000, 25], 
+    [1005, 1000, 25], 
+    [1000, 1005, 25], 
+    [1005, 1005, 25]
+]] call TerrainLib_fnc_alignPointsToGrid;
+```
+
+Then, in `TerrainLib_fnc_setTerrainHeight`, you can set the `_lazy` arg to true, which is a promise that you are passing a list of points that are already aligned.
+
 
 ## Run this on the VR map in init.sqf for a nice demo of all the customisation features:
 ```sqf

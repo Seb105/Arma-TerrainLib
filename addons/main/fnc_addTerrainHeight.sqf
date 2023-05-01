@@ -26,7 +26,7 @@ Parameters:
 
 
 Returns:
-    False if not the server, or _positionsAndHeights that were actually set in-game after any event handlers [BOOL, ARRAY];
+    False if not the server, or _positionsAndHeights that were actually set in-game after any event handlers [BOOL, ARRAY]
 
 Examples:
     (BEGIN EXAMPLE)
