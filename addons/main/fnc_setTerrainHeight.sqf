@@ -15,6 +15,8 @@ Description:
     You can't just overwrite the array variable with a new one, you have to mutate existing reference with the set command
     If you want to use the EH to modify the ouptut, use this method as calling setTerrainHeight again may cause an infinite loop.
 
+    Event handlers and terrain changes will always be executed in a single frame.
+
 Parameters:
     _positionsAndHeights - array of [[x1,y1,z1], [x2,y2,z2]...]  [ARRAY]
     _adjustObjects - if true then objects on modified points are moved up/down to keep the same ATL height  [BOOL]
@@ -54,19 +56,20 @@ private _positionsAndHeights = if (_lazy) then {
 } else {
     [_positionsAndHeightsIn] call TerrainLib_fnc_alignPointsToGrid
 };
+// Always do terrain changes in a single frame
+isNil {
+    // Local event will only be called on server due to above. As this is called before setTerrainHeight, if you mutate the input array you mutate the output here.
+    ["TerrainLib_terrainHeightChanged", [_positionsAndHeights, _adjustObjects]] call CBA_fnc_localEvent;
 
-// Local event will only be called on server due to above. As this is called before setTerrainHeight, if you mutate the input array you mutate the output here.
-["TerrainLib_terrainHeightChanged", [_positionsAndHeights, _adjustObjects]] call CBA_fnc_localEvent;
+    // Deprecate non-lazy version as alignment happens above
+    private _chunksData = [_positionsAndHeights] call FUNC(positionsAndHeightsToChunksLazy);
 
-// Deprecate non-lazy version as alignment happens above
-private _chunksData = [_positionsAndHeights] call FUNC(positionsAndHeightsToChunksLazy);
-
-{
-    private _key = _x;
-    private _chunkPositionsAndHeights = _y;
-    setTerrainHeight [_chunkPositionsAndHeights, _adjustObjects];
-    // Wiki is wrong, don't need to serialise terrain ourselves, but is useful cache for speed probably
-    GVAR(modifiedTerrainChunks) set [_key, [_chunkPositionsAndHeights, _adjustObjects]];
-} forEach _chunksData;
-
+    {
+        private _key = _x;
+        private _chunkPositionsAndHeights = _y;
+        setTerrainHeight [_chunkPositionsAndHeights, _adjustObjects];
+        // Wiki is wrong, don't need to serialise terrain ourselves, but is useful cache for speed probably
+        GVAR(modifiedTerrainChunks) set [_key, [_chunkPositionsAndHeights, _adjustObjects]];
+    } forEach _chunksData;
+};
 _positionsAndHeights
