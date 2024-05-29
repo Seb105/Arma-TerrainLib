@@ -1,0 +1,19 @@
+name = "TerrainLib"
+prefix = "TerrainLib"
+
+[properties]
+author = "Seb"
+
+[version]
+git_hash = 0
+
+[files]
+include = [
+    "./include",
+    "mod.cpp",
+    "logo.paa",
+    "logoSmall.paa",
+] 
+
+[hemtt.release]
+archive = false

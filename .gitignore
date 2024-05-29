@@ -3,7 +3,7 @@
 releases/*
 *.biprivatekey
 keys/*
-.hemtt/local
+.hemttout/*
 ####
 *.pbo
 .hemtt/template/
