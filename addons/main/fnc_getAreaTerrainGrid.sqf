@@ -74,6 +74,7 @@ for "_j" from 0 to _maxCount do {
     private _offset = _offsetX;
     private _upY = _cellY + _offsetY;
     private _downY = _cellY - _offsetY;
+    // Walk to the right until we hit the edge of the area
     for "_k" from 0 to _maxCount do {
         private _posX = _cellX + _offset;
         private _posUp = [_posX, _upY];
@@ -84,6 +85,7 @@ for "_j" from 0 to _maxCount do {
             _positionsAndHeights pushBack _posUp;
             _inAreaRow = true;                
         };
+        // As shape is symmetrical we can re-use position data
         if (_posDown inArea _area) then {
             _posDown set [2, getTerrainHeight _posDown];
             _positionsAndHeights pushBack _posDown;
