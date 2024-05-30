@@ -4,8 +4,8 @@ prefix = "TerrainLib"
 [properties]
 author = "Seb"
 
-[version]
-git_hash = 0
+# [version]
+# git_hash = 0
 
 [files]
 include = [

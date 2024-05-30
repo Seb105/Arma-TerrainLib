@@ -31,27 +31,88 @@ params ["_areaArg"];
 getTerrainInfo params ["", "", "_cellSize", "_resolution", ""];
 private _area = _areaArg call BIS_fnc_getArea;
 _area set [5, -1]; // Ignore Z value from objects/markers
-private _centre = (_area#0) select [0,2];
+_area params ["_centre", "_halfWidth", "_halfLength", "_dir"];
+private _sinDir = sin _dir;
+private _cosDir = cos _dir;
+// Get bounds of rectangle accounting for direction. This is in terrian resolution units not meters
+private _horizontalComponent = 2 * abs (ceil ((_cosDir * _halfWidth  + _sinDir * _halfLength)/_cellSize));
+private _verticalComponent =  2 * abs (ceil ((_cosDir * _halfLength + _sinDir * _halfWidth) /_cellSize));
+private _cellX = (round (_centre#0 / _cellSize)) * _cellSize;
+private _cellY = (round (_centre#1 / _cellSize)) * _cellSize;
 
-// Get all points that lie within a rectangle guaranteed to contain the entire area
-private _boundarySize = ((_area#1) max (_area#2)) * 1.42;
-private _numCells = ceil (2*_boundarySize/_cellSize);
-_centre apply {floor ((_x-_boundarySize)/_cellSize)} params ["_cellX", "_cellY"];
-private _minX = _cellX max 0;
-private _minY = _cellY max 0;
-private _maxX = (_cellX + _numCells) min _resolution;
-private _maxY = (_cellY + _numCells) min _resolution;
-private _positionsAndHeights = [];
-for "_cx" from _minX to _maxX do {
-    for "_cy" from _minY to _maxY do {
-        _positionsAndHeights pushBack ([_cx, _cy, 0] vectorMultiply _cellSize);
+// Simplified flood fill algorithm to get all points in the area
+POINTS = [];
+POINTS_2 = [];
+private _positionsAndHeights = POINTS;
+private _sleep = 0.005;
+private _offsetX = 0;
+private _offsetY = _cellSize;
+// Centre line
+for "_l" from 1 to _horizontalComponent do {
+    private _p1 = [_cellX - _l * _cellSize, _cellY];
+    private _p2 = [_cellX + (_l-1) * _cellSize, _cellY];
+    private _in = false;
+    if (_p1 inArea _area) then {
+        _p1 set [2, getTerrainHeight _p1];
+        _in = true;
+        _positionsAndHeights pushBack _p1;
+    };
+    if (_p2 inArea _area) then {
+        _p2 set [2, getTerrainHeight _p2];
+        _in = true;
+        _positionsAndHeights pushBack _p2;
+    };
+    if !(_in) then {
+        break;
     };
 };
-
-// Filter list to points actually within the area
-_positionsAndHeights = (_positionsAndHeights inAreaArray _area);
-{
-    _x set [2, getTerrainHeight _x]
-} forEach _positionsAndHeights;
+for "_j" from 0 to _verticalComponent do {
+    // Walk to the left until we hit the edge of the area
+    for "_i" from 0 to _horizontalComponent do {
+        private _next = _offsetX - _cellSize;
+        private _pos = [_cellX + _next, _cellY + _offsetY];
+        if !(_pos inArea _area) then {
+            break;
+        };
+        _offsetX = _next;
+    };
+    private _nextOffsetX = nil;
+    private _offset = _offsetX;
+    private _upY = _cellY + _offsetY;
+    private _downY = _cellY - _offsetY;
+    for "_k" from 0 to _horizontalComponent do {
+        private _posX = _cellX + _offset;
+        private _posUp = [_posX, _upY];
+        private _posDown = [_cellX - _offset, _downY];
+        private _inAreaRow = false;
+        if (_posUp inArea _area) then {
+            _posUp set [2, getTerrainHeight _posUp];
+            _positionsAndHeights pushBack _posUp;
+            _inAreaRow = true;                
+        };
+        if (_posDown inArea _area) then {
+            _posDown set [2, getTerrainHeight _posDown];
+            _positionsAndHeights pushBack _posDown;
+            _inAreaRow = true;
+        };
+        if (isNil "_nextOffsetX") then {
+            private _up1 = [_posX, _upY + _cellSize];
+            if (_up1 inArea _area) then {
+                _nextOffsetX = _offset;
+                _up1 set [2, getTerrainHeight _up1];
+                POINTS_2 pushBack _up1;
+            };
+        };
+        if (!_inAreaRow) then {
+            break;
+        };
+        _offset = _offset + _cellSize;
+    };
+    if (isNil "_nextOffsetX") then {
+        break;
+    };
+    _offsetY = _offsetY + _cellSize;
+    _offsetX = _nextOffsetX;
+};
 
 _positionsAndHeights
