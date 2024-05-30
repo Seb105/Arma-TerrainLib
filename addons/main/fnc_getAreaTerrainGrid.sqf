@@ -1,4 +1,4 @@
-#include "script_component.hpp"
+// #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
 Function: TerrainLib_fnc_getAreaTerrainGrid
 
@@ -32,23 +32,18 @@ getTerrainInfo params ["", "", "_cellSize", "_resolution", ""];
 private _area = _areaArg call BIS_fnc_getArea;
 _area set [5, -1]; // Ignore Z value from objects/markers
 _area params ["_centre", "_halfWidth", "_halfLength", "_dir"];
-private _sinDir = sin _dir;
-private _cosDir = cos _dir;
 // Get bounds of rectangle accounting for direction. This is in terrian resolution units not meters
-private _horizontalComponent = 2 * abs (ceil ((_cosDir * _halfWidth  + _sinDir * _halfLength)/_cellSize));
-private _verticalComponent =  2 * abs (ceil ((_cosDir * _halfLength + _sinDir * _halfWidth) /_cellSize));
+private _maxCount = ((_halfWidth+_halfLength)*3)/_cellSize; // Lazy approximation of bounding box, always exit before then anyways
 private _cellX = (round (_centre#0 / _cellSize)) * _cellSize;
 private _cellY = (round (_centre#1 / _cellSize)) * _cellSize;
 
 // Simplified flood fill algorithm to get all points in the area
-POINTS = [];
-POINTS_2 = [];
-private _positionsAndHeights = POINTS;
-private _sleep = 0.005;
+private _positionsAndHeights = [];
+POINTS = _positionsAndHeights;
 private _offsetX = 0;
 private _offsetY = _cellSize;
 // Centre line
-for "_l" from 1 to _horizontalComponent do {
+for "_l" from 1 to _maxCount do {
     private _p1 = [_cellX - _l * _cellSize, _cellY];
     private _p2 = [_cellX + (_l-1) * _cellSize, _cellY];
     private _in = false;
@@ -66,9 +61,9 @@ for "_l" from 1 to _horizontalComponent do {
         break;
     };
 };
-for "_j" from 0 to _verticalComponent do {
+for "_j" from 0 to _maxCount do {
     // Walk to the left until we hit the edge of the area
-    for "_i" from 0 to _horizontalComponent do {
+    for "_i" from 0 to _maxCount do {
         private _next = _offsetX - _cellSize;
         private _pos = [_cellX + _next, _cellY + _offsetY];
         if !(_pos inArea _area) then {
@@ -80,7 +75,7 @@ for "_j" from 0 to _verticalComponent do {
     private _offset = _offsetX;
     private _upY = _cellY + _offsetY;
     private _downY = _cellY - _offsetY;
-    for "_k" from 0 to _horizontalComponent do {
+    for "_k" from 0 to _maxCount do {
         private _posX = _cellX + _offset;
         private _posUp = [_posX, _upY];
         private _posDown = [_cellX - _offset, _downY];
@@ -100,13 +95,13 @@ for "_j" from 0 to _verticalComponent do {
             if (_up1 inArea _area) then {
                 _nextOffsetX = _offset;
                 _up1 set [2, getTerrainHeight _up1];
-                POINTS_2 pushBack _up1;
             };
         };
         if (!_inAreaRow) then {
             break;
         };
         _offset = _offset + _cellSize;
+        sleep 0.05;
     };
     if (isNil "_nextOffsetX") then {
         break;
