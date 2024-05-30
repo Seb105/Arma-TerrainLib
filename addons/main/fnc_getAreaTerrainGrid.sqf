@@ -39,7 +39,6 @@ private _cellY = (round (_centre#1 / _cellSize)) * _cellSize;
 
 // Simplified flood fill algorithm to get all points in the area
 private _positionsAndHeights = [];
-POINTS = _positionsAndHeights;
 private _offsetX = 0;
 private _offsetY = _cellSize;
 // Centre line
@@ -101,7 +100,7 @@ for "_j" from 0 to _maxCount do {
             break;
         };
         _offset = _offset + _cellSize;
-        sleep 0.05;
+        // sleep 0.05;
     };
     if (isNil "_nextOffsetX") then {
         break;
